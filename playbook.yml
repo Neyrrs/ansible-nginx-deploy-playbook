@@ -1,0 +1,57 @@
+---
+- name: Example Playbook
+  hosts: webserver
+  become: true
+  vars:
+    webserver_pkg: nginx
+    app_name: Comapny Portal
+    environtment: production
+  tasks:
+    - name: Ensure nginx is installed
+      ansible.builtin.dnf:
+        name: "{{ webserver_pkg }}"
+        state: present
+    
+    - name: Start and enable nginx service
+      ansible.builtin.service:
+        name: "{{ webserver_pkg }}"
+        state: started
+        enabled: true
+
+    - name: Ensure http port is open
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+  
+    - name: Deploy html nginx file
+      ansible.builtin.template:
+        src: templates/index.html.j2
+        dest: /usr/share/nginx/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Deploy nginx configuration file
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Check nginx service
+      ansible.builtin.command:
+        cmd: "systemctl is-active nginx"
+      register: nginx_status
+
+    - name: Display nginx service status
+      ansible.builtin.debug:
+        msg: "Nginx service is {{ nginx_status.stdout }}"
+
+  handlers:
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: "{{ webserver_pkg }}"
+        state: restarted
