@@ -11,7 +11,7 @@
       ansible.builtin.dnf:
         name: "{{ webserver_pkg }}"
         state: present
-    
+
     - name: Start and enable nginx service
       ansible.builtin.service:
         name: "{{ webserver_pkg }}"
