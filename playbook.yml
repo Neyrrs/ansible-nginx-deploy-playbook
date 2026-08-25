@@ -4,8 +4,8 @@
   become: true
   vars:
     webserver_pkg: nginx
-    app_name: Comapny Portal
-    environtment: production
+    app_name: Company Portal
+    environment: development
   tasks:
     - name: Ensure nginx is installed
       ansible.builtin.dnf:
@@ -44,6 +44,7 @@
     - name: Check nginx service
       ansible.builtin.command:
         cmd: "systemctl is-active nginx"
+      changed_when: false
       register: nginx_status
 
     - name: Display nginx service status
