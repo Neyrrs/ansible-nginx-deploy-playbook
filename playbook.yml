@@ -13,7 +13,7 @@
         state: present
 
     - name: Start and enable nginx service
-      ansible.builtin.service:
+      ansible.builtin.systemd:
         name: "{{ webserver_pkg }}"
         state: started
         enabled: true
