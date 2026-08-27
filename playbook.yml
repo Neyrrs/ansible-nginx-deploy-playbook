@@ -5,7 +5,6 @@
   vars:
     webserver_pkg: nginx
     app_name: Company Portal
-    environment: development
   tasks:
     - name: Ensure nginx is installed
       ansible.builtin.dnf:
